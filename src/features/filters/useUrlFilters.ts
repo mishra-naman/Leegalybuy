@@ -6,7 +6,10 @@ export function useUrlFilters() {
   const [params, setParams] = useSearchParams();
   const filters = useMemo(() => parseFilters(params), [params]);
   function update(patch: Partial<Filters>, replace = false) {
-    setParams((current) => serializeFilters({ ...parseFilters(current), page: 1, ...patch }), { replace });
+    setParams((current) => serializeFilters({ ...parseFilters(current), page: 1, ...patch }), {
+      replace,
+      flushSync: true,
+    });
   }
   return { filters, update };
 }

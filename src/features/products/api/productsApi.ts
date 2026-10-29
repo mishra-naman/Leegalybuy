@@ -34,7 +34,10 @@ export function categoryLabel(slug: string) {
 }
 
 export class ApiError extends Error {
-  constructor(message: string, public status?: number) {
+  constructor(
+    message: string,
+    public status?: number,
+  ) {
     super(message);
     this.name = 'ApiError';
   }
@@ -44,7 +47,9 @@ async function request<T>(path: string, schema: z.ZodType<T>, signal?: AbortSign
   let response: Response;
   try {
     response = await fetch(`https://dummyjson.com${path}`, {
-      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000),
+      signal: signal
+        ? AbortSignal.any([signal, AbortSignal.timeout(20000)])
+        : AbortSignal.timeout(20000),
     });
   } catch (error) {
     if (signal?.aborted) throw error;
@@ -52,7 +57,9 @@ async function request<T>(path: string, schema: z.ZodType<T>, signal?: AbortSign
   }
   if (!response.ok) {
     throw new ApiError(
-      response.status === 404 ? 'This product could not be found.' : 'The product service is temporarily unavailable.',
+      response.status === 404
+        ? 'This product could not be found.'
+        : 'The product service is temporarily unavailable.',
       response.status,
     );
   }
@@ -63,7 +70,8 @@ async function request<T>(path: string, schema: z.ZodType<T>, signal?: AbortSign
     throw new ApiError('The product service returned an unreadable response. Please try again.');
   }
   const parsed = schema.safeParse(data);
-  if (!parsed.success) throw new ApiError('The product service returned unexpected data. Please try again.');
+  if (!parsed.success)
+    throw new ApiError('The product service returned unexpected data. Please try again.');
   return parsed.data;
 }
 
@@ -72,8 +80,13 @@ async function getCollection(path: string, signal?: AbortSignal): Promise<Produc
   const products = [...first.products];
   // Some API deployments cap limit=0. Continue until the advertised total is covered.
   while (products.length < first.total) {
-    const next = await request(`${path}?limit=100&skip=${products.length}`, collectionSchema, signal);
-    if (!next.products.length) throw new ApiError('The product service returned an incomplete catalogue. Please retry.');
+    const next = await request(
+      `${path}?limit=100&skip=${products.length}`,
+      collectionSchema,
+      signal,
+    );
+    if (!next.products.length)
+      throw new ApiError('The product service returned an incomplete catalogue. Please retry.');
     products.push(...next.products);
   }
   return [...new Map(products.map((product) => [product.id, product])).values()];
@@ -82,5 +95,7 @@ async function getCollection(path: string, signal?: AbortSignal): Promise<Produc
 export const getProducts = (signal?: AbortSignal) => getCollection('/products', signal);
 export const getProductsByCategory = (category: string, signal?: AbortSignal) =>
   getCollection(`/products/category/${encodeURIComponent(category)}`, signal);
-export const getCategories = (signal?: AbortSignal) => request('/products/categories', z.array(categorySchema), signal);
-export const getProductById = (id: number, signal?: AbortSignal) => request(`/products/${id}`, productSchema, signal);
+export const getCategories = (signal?: AbortSignal) =>
+  request('/products/categories', z.array(categorySchema), signal);
+export const getProductById = (id: number, signal?: AbortSignal) =>
+  request(`/products/${id}`, productSchema, signal);

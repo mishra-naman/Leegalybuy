@@ -13,6 +13,9 @@ export function readStorage<T>(key: string, schema: z.ZodType<T>, fallback: T): 
   return fallback;
 }
 export function writeStorage(key: string, value: string) {
-  try { localStorage.setItem(key, value); }
-  catch (error) { console.warn(`Could not save preference (${key}).`, error); }
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.warn(`Could not save preference (${key}).`, error);
+  }
 }

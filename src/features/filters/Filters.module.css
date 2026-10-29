@@ -1,17 +1,103 @@
-.sidebar { padding: 19px 16px 14px 27px; }
-.section { border-top: 1px solid var(--color-border); margin-top: 16px; padding-top: 15px; }
-.section h2 { font-size: 17px; font-weight: 400; margin-bottom: 14px; }
-.section .categoryHeading { font-weight: 600; margin-bottom: 16px; }
-.options { max-height: 188px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--color-border) transparent; }
-.options label { display: flex; align-items: center; gap: 10px; font-size: 16px; min-height: 31px; line-height: 1.3; cursor: pointer; padding: 3px 3px 3px 0; }
-.options label:hover { color: var(--color-primary-strong); }
-.brands { max-height: 157px; }
-.priceInputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.priceInputs input { min-width: 0; width: 100%; height: 41px; padding: 0 11px; }
-.apply { background: var(--color-primary); border-color: var(--color-primary); color: white; margin-top: 11px; height: 37px; width: 100%; }
-.apply:hover { filter: brightness(.94); }
-.validation, .inlineError { color: var(--color-danger); font-size: 12px; line-height: 1.5; margin: 9px 0 0; }
-.inlineError button { padding: 5px 8px; }
-.subdued { font-size: 13px; color: var(--color-muted); margin: 4px 0 8px; }
-.clear { display: block; margin: 12px auto 0; border: 0; background: transparent; color: var(--color-primary-strong); font-size: 12px; padding: 5px 10px; text-decoration: underline; text-underline-offset: 3px; }
-@media (max-width: 767px) { .sidebar { padding: 20px; } .options { max-height: 220px; } .options label { min-height: 38px; } .brands { max-height: 220px; } }
+.sidebar {
+  padding: 19px 16px 9px 27px;
+}
+.section {
+  border-top: 1px solid var(--color-border);
+  margin-top: 14px;
+  padding-top: 14px;
+}
+.section h2 {
+  font-size: 17px;
+  font-weight: 400;
+  margin-bottom: 14px;
+}
+.section .categoryHeading {
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.options {
+  min-height: 186px;
+  max-height: 186px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+.options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  min-height: 31px;
+  line-height: 1.3;
+  cursor: pointer;
+  padding: 3px 3px 3px 0;
+}
+.options label:hover {
+  color: var(--color-primary-strong);
+}
+.brands {
+  min-height: 150px;
+  max-height: 150px;
+}
+.priceInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.priceInputs input {
+  min-width: 0;
+  width: 100%;
+  height: 41px;
+  padding: 0 11px;
+}
+.apply {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  margin-top: 11px;
+  height: 37px;
+  width: 100%;
+}
+.apply:hover {
+  filter: brightness(0.94);
+}
+.validation,
+.inlineError {
+  color: var(--color-danger);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 9px 0 0;
+}
+.inlineError button {
+  padding: 5px 8px;
+}
+.subdued {
+  font-size: 13px;
+  color: var(--color-muted);
+  margin: 4px 0 8px;
+}
+.clear {
+  display: block;
+  margin: 12px auto 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary-strong);
+  font-size: 12px;
+  padding: 5px 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 767px) {
+  .sidebar {
+    padding: 20px;
+  }
+  .options {
+    max-height: 220px;
+  }
+  .options label {
+    min-height: 38px;
+  }
+  .brands {
+    max-height: 220px;
+  }
+}

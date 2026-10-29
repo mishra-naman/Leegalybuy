@@ -5,7 +5,10 @@ import { parseFilters, safeListingUrl, serializeFilters } from '../../features/f
 export function useSearchController() {
   const location = useLocation();
   const navigate = useNavigate();
-  const listingUrl = location.pathname === '/' ? `/${location.search}` : safeListingUrl(new URLSearchParams(location.search).get('returnTo'));
+  const listingUrl =
+    location.pathname === '/'
+      ? `/${location.search}`
+      : safeListingUrl(new URLSearchParams(location.search).get('returnTo'));
   const filters = parseFilters(new URLSearchParams(listingUrl.split('?')[1]));
   const [term, setTerm] = useState(filters.q);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -18,9 +21,15 @@ export function useSearchController() {
     const params = serializeFilters({ ...filters, q: value.trim(), page: 1 });
     navigate({ pathname: '/', search: params.toString() }, { replace: location.pathname === '/' });
   }
-  return { term, change(value: string) {
-    setTerm(value);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => commit(value), 250);
-  }, submit() { commit(term); } };
+  return {
+    term,
+    change(value: string) {
+      setTerm(value);
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => commit(value), 250);
+    },
+    submit() {
+      commit(term);
+    },
+  };
 }

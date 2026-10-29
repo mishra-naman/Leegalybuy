@@ -1,5 +1,17 @@
 import { describe, expect, it, vi } from 'vitest';
-import { addItem, cartSchema, cartSlice, changeQuantity, clearCart, loadCart, removeItem, selectCartCount, selectSubtotalCents, toCartItem, CART_KEY } from './cartSlice';
+import {
+  addItem,
+  cartSchema,
+  cartSlice,
+  changeQuantity,
+  clearCart,
+  loadCart,
+  removeItem,
+  selectCartCount,
+  selectSubtotalCents,
+  toCartItem,
+  CART_KEY,
+} from './cartSlice';
 import { makeProduct } from '../../test/fixtures';
 import themeReducer, { toggleTheme } from '../theme/themeSlice';
 
@@ -26,13 +38,20 @@ describe('cart and theme state', () => {
   it('validates saved cart and rejects corrupt or duplicate items', () => {
     expect(cartSchema.safeParse([{ ...item, quantity: 1 }]).success).toBe(true);
     expect(cartSchema.safeParse([{ ...item, quantity: -1 }]).success).toBe(false);
-    expect(cartSchema.safeParse([{ ...item, quantity: 1 }, { ...item, quantity: 1 }]).success).toBe(false);
+    expect(
+      cartSchema.safeParse([
+        { ...item, quantity: 1 },
+        { ...item, quantity: 1 },
+      ]).success,
+    ).toBe(false);
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     localStorage.setItem(CART_KEY, '{broken');
     expect(loadCart()).toEqual([]);
     localStorage.setItem(CART_KEY, JSON.stringify([{ ...item, quantity: 2 }]));
     expect(loadCart()[0].quantity).toBe(2);
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('Storage blocked'); });
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('Storage blocked');
+    });
     expect(loadCart()).toEqual([]);
   });
   it('toggles theme in both directions', () => {
