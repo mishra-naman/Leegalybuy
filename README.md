@@ -4,7 +4,7 @@ A Leegality Frontend Engineer Assessment: a compact, responsive product catalogu
 
 Repository: [mishra-naman/Leegalybuy](https://github.com/mishra-naman/Leegalybuy).
 
-Demo address: [Leegalybuy](https://leegalybuy-naman.foamygoose21.chatgpt.site) (private Sites hosting; requires the owner's ChatGPT sign-in). Publication status is reported at handoff.
+Live demo: [Leegalybuy](https://leegalybuy-naman.foamygoose21.chatgpt.site) (private Sites hosting; requires the owner's ChatGPT sign-in).
 
 ## Features
 
@@ -115,7 +115,9 @@ Live product titles, prices, images, categories, descriptions and reviews differ
 
 ## Testing and performance
 
-Unit tests cover combined filtering, multi-select behavior, inclusive boundaries, all sort orders, immutable processing, page clamping, URL round-trips, invalid input, safe return links, cart quantities/totals, corrupt storage, theme toggles and API failures/cancellation. Component tests exercise cards, filters, validation, pagination, feedback, cart, themes and gallery navigation. Browser tests cover complete filter/navigation/cart/theme/zoom/mobile/error flows. CI runs checks and bundled-Chromium E2E tests.
+Unit tests cover combined filtering, multi-select behavior, inclusive boundaries, all sort orders, immutable processing, page clamping, URL round-trips, invalid input, safe return links, cart quantities/totals, corrupt storage, theme toggles and API failures/cancellation. Component tests exercise cards, filters, validation, pagination, feedback, cart, themes and gallery navigation. Browser tests cover complete filter/navigation/cart/theme/zoom/mobile/error flows, independent search state and viewport scrolling.
+
+Verified locally: 26 unit/component tests, 11 deterministic browser flows and the live API smoke test passed. Strict type checking, lint, formatting and the production build passed. Desktop, mobile, cart and dark-theme screenshots were captured for inspection.
 
 Both page implementations are lazy loaded. Cart, mobile filters and zoom split into separate chunks. Above-the-fold thumbnails and the main detail image are prioritized; other images are lazy loaded with reserved dimensions. Filtering and sorting use memoized pure computations. Eight cards do not need virtualization. No runtime CSS framework, gallery package, HTTP wrapper or duplicate server-state store is included.
 
