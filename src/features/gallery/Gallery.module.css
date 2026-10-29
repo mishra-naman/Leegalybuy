@@ -1,0 +1,19 @@
+.gallery { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.mainImage { flex: 1; width: 100%; min-height: 420px; position: relative; border: 0; padding: 0; background: transparent; cursor: zoom-in; }
+.image { width: 100%; height: 420px; object-fit: contain; padding: 0 12px; }
+.zoomHint { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--color-muted); display: flex; align-items: center; gap: 5px; white-space: nowrap; opacity: 0; transition: opacity .15s; }
+.mainImage:hover .zoomHint, .mainImage:focus-visible .zoomHint { opacity: 1; }
+.navigation { padding-top: 20px; }
+.thumbnails { display: flex; gap: 6px; justify-content: center; overflow-x: auto; padding: 4px; }
+.thumbnails button { padding: 3px; width: 48px; height: 48px; flex-shrink: 0; }
+.thumbnails button[aria-pressed='true'] { border-color: var(--color-primary); background: var(--color-hover); }
+.thumbnails img { width: 100%; height: 100%; object-fit: contain; }
+.zoomModal { overflow: hidden; }
+.zoomViewport { height: min(65dvh, 620px); overflow: auto; overscroll-behavior: contain; background: var(--color-sidebar); }
+.zoomCanvas { display: grid; place-items: center; min-height: 100%; }
+.zoomCanvas img { width: 100%; height: 100%; object-fit: contain; }
+.zoomControls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; padding: 14px 10px; font-size: 13px; }
+.zoomControls button { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0; }
+.controlDivider { height: 22px; border-left: 1px solid var(--color-border); margin: 0 5px; }
+@media (max-width: 1099px) { .image { height: 360px; } .mainImage { min-height: 360px; } }
+@media (max-width: 767px) { .mainImage { min-height: 300px; flex: initial; } .image { height: 300px; padding: 12px 20px; } .navigation { padding-top: 10px; } .zoomHint { opacity: 1; bottom: 0; } .zoomControls { gap: 5px; } .zoomControls button { width: 32px; } .controlDivider { margin: 0 2px; } }
