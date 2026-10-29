@@ -3,8 +3,10 @@ import type { Category } from '../products/api/productsApi';
 import type { Filters } from './filterState';
 import { validatePriceRange } from './filterState';
 import { Search } from 'lucide-react';
-import sharedStyles from '../../shared/components/Shared.module.css';
-import styles from './Filters.module.css';
+
+const optionClass =
+  'flex min-h-[31px] cursor-pointer items-center gap-2.5 py-[3px] pr-[3px] text-base hover:text-accent max-md:min-h-[38px]';
+const optionsClass = 'scrollbar-visible overflow-y-scroll pr-1.5 max-md:max-h-[220px]';
 
 interface Props {
   filters: Filters;
@@ -64,15 +66,16 @@ export default function FilterSidebar({
     clear();
   }
   return (
-    <div className={styles.sidebar}>
+    <div className="pt-[19px] pr-4 pb-[9px] pl-[27px] max-md:p-5">
       <form
-        className={`${sharedStyles.search} ${sharedStyles.sidebarSearch}`}
+        className="flex h-11 min-w-0 items-center gap-[9px] rounded-[7px] border border-line bg-field px-[13px] text-muted"
         role="search"
         aria-label="Filter options"
         onSubmit={(event) => event.preventDefault()}
       >
         <Search size={21} aria-hidden="true" />
         <input
+          className="h-full min-w-0 w-full border-0 bg-transparent p-0 text-[16px] text-ink focus:outline-none"
           type="search"
           aria-label="Search filters"
           placeholder="Search..."
@@ -81,7 +84,7 @@ export default function FilterSidebar({
           maxLength={200}
         />
         <button
-          className={styles.clearButton}
+          className="flex h-[30px] min-w-[65px] shrink-0 items-center justify-center border-0 bg-transparent p-0 text-[11px] whitespace-nowrap text-accent hover:enabled:bg-hover"
           type="button"
           aria-label="Clear filters"
           title="Clear filters"
@@ -91,13 +94,17 @@ export default function FilterSidebar({
           Clear filters
         </button>
       </form>
-      <section className={styles.section} aria-labelledby="category-heading">
-        <h2 id="category-heading" className={styles.categoryHeading}>
+      <section className="mt-3.5 border-t border-line pt-3.5" aria-labelledby="category-heading">
+        <h2 id="category-heading" className="mb-4 text-[17px] font-semibold">
           Categories
         </h2>
-        <div className={styles.options} tabIndex={0} aria-label="Available categories">
+        <div
+          className={`${optionsClass} min-h-[186px] max-h-[186px]`}
+          tabIndex={0}
+          aria-label="Available categories"
+        >
           {visibleCategories.map((category) => (
-            <label key={category.slug}>
+            <label key={category.slug} className={optionClass}>
               <input
                 type="checkbox"
                 checked={filters.categories.includes(category.slug)}
@@ -106,22 +113,27 @@ export default function FilterSidebar({
               {category.name}
             </label>
           ))}
-          {loading && <p className={styles.subdued}>Loading categories…</p>}
+          {loading && <p className="mt-1 mb-2 text-[13px] text-muted">Loading categories…</p>}
           {!loading && !visibleCategories.length && !categoryError && (
-            <p className={styles.subdued}>
+            <p className="mt-1 mb-2 text-[13px] text-muted">
               {categories.length ? 'No matching categories.' : 'No categories available.'}
             </p>
           )}
         </div>
         {categoryError && (
-          <div role="alert" className={styles.inlineError}>
+          <div
+            role="alert"
+            className="mt-[9px] text-xs leading-normal text-danger [&>button]:px-2 [&>button]:py-[5px]"
+          >
             <p>{categoryError}</p>
             <button onClick={retryCategories}>Retry categories</button>
           </div>
         )}
       </section>
-      <section className={styles.section} aria-labelledby="price-heading">
-        <h2 id="price-heading">Price Range</h2>
+      <section className="mt-3.5 border-t border-line pt-3.5" aria-labelledby="price-heading">
+        <h2 id="price-heading" className="mb-3.5 text-[17px]">
+          Price Range
+        </h2>
         <form
           noValidate
           onSubmit={(event) => {
@@ -135,7 +147,7 @@ export default function FilterSidebar({
             update({ min: result.min, max: result.max });
           }}
         >
-          <div className={styles.priceInputs}>
+          <div className="grid grid-cols-2 gap-2.5 [&>input]:h-[41px] [&>input]:min-w-0 [&>input]:w-full [&>input]:px-[11px]">
             <input
               type="text"
               inputMode="decimal"
@@ -158,24 +170,33 @@ export default function FilterSidebar({
             />
           </div>
           {error && (
-            <p id="price-error" role="alert" className={styles.validation}>
+            <p
+              id="price-error"
+              role="alert"
+              className="mt-[9px] text-xs leading-normal text-danger"
+            >
               {error}
             </p>
           )}
-          <button className={styles.apply} type="submit">
+          <button
+            className="mt-[11px] h-[37px] w-full border-primary bg-primary text-white hover:brightness-95"
+            type="submit"
+          >
             Apply
           </button>
         </form>
       </section>
-      <section className={styles.section} aria-labelledby="brands-heading">
-        <h2 id="brands-heading">Brands</h2>
+      <section className="mt-3.5 border-t border-line pt-3.5" aria-labelledby="brands-heading">
+        <h2 id="brands-heading" className="mb-3.5 text-[17px]">
+          Brands
+        </h2>
         <div
-          className={`${styles.options} ${styles.brands}`}
+          className={`${optionsClass} min-h-[150px] max-h-[150px]`}
           tabIndex={0}
           aria-label="Available brands"
         >
           {visibleBrands.map((brand) => (
-            <label key={brand}>
+            <label key={brand} className={optionClass}>
               <input
                 type="checkbox"
                 checked={filters.brands.includes(brand)}
@@ -185,7 +206,7 @@ export default function FilterSidebar({
             </label>
           ))}
           {!visibleBrands.length && (
-            <p className={styles.subdued}>
+            <p className="mt-1 mb-2 text-[13px] text-muted">
               {loading
                 ? 'Loading brands…'
                 : brands.length

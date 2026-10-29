@@ -19,4 +19,3 @@ Object.defineProperty(HTMLDialogElement.prototype, 'close', {
 Object.defineProperty(window, 'matchMedia', {
   value: vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })),
 });
-window.scrollTo = vi.fn();

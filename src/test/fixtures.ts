@@ -1,6 +1,5 @@
 import type { Product } from '../features/products/api/productsApi';
 
-// Synthetic data exists only in deterministic tests, never in the running application.
 export function makeProduct(overrides: Partial<Product> = {}): Product {
   return {
     id: 1,

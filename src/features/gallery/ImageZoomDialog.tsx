@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import Modal from '../../shared/components/Modal';
 import ProductImage from '../../shared/components/ProductImage';
-import styles from './Gallery.module.css';
 
 interface Props {
   images: string[];
@@ -11,6 +10,7 @@ interface Props {
   onSelect: (index: number) => void;
   onClose: () => void;
 }
+const controlButton = 'flex size-[34px] items-center justify-center p-0 max-md:size-8';
 export default function ImageZoomDialog({ images, title, selected, onSelect, onClose }: Props) {
   const [zoom, setZoom] = useState(1);
   const viewport = useRef<HTMLDivElement>(null);
@@ -42,35 +42,47 @@ export default function ImageZoomDialog({ images, title, selected, onSelect, onC
     return () => document.removeEventListener('keydown', navigate);
   }, [images.length, onSelect, selected]);
   return (
-    <Modal title={`Image gallery: ${title}`} onClose={onClose} className={styles.zoomModal} minimal>
+    <Modal title={`Image gallery: ${title}`} onClose={onClose}>
       <div
         ref={viewport}
-        className={styles.zoomViewport}
+        className="h-full w-full touch-pan-x touch-pan-y overflow-auto overscroll-contain bg-surface"
         onDragStart={(event) => event.preventDefault()}
       >
         <div
-          className={styles.zoomCanvas}
+          className="flex min-h-full items-center justify-center px-7 pt-12 pb-[82px]"
           style={{ width: `${zoom * 100}%`, height: `${zoom * 100}%` }}
         >
-          <ProductImage src={images[selected]} alt={`${title}, image ${selected + 1}`} priority />
+          <ProductImage
+            src={images[selected]}
+            alt={`${title}, image ${selected + 1}`}
+            priority
+            className="size-full min-h-0 min-w-0 object-contain"
+          />
         </div>
       </div>
-      <div className={styles.zoomControls}>
-        <button aria-label="Previous image" disabled={selected === 0} onClick={() => move(-1)}>
+      <div className="absolute bottom-4 left-1/2 flex w-max max-w-[calc(100%-24px)] -translate-x-1/2 flex-wrap items-center justify-center gap-2.5 rounded-lg border border-line bg-surface px-2.5 py-2 text-[13px] shadow-[0_2px_12px_#14203314] max-md:gap-[5px]">
+        <button
+          className={controlButton}
+          aria-label="Previous image"
+          disabled={selected === 0}
+          onClick={() => move(-1)}
+        >
           <ChevronLeft size={20} />
         </button>
         <span aria-live="polite">
           {selected + 1} / {images.length}
         </span>
         <button
+          className={controlButton}
           aria-label="Next image"
           disabled={selected === images.length - 1}
           onClick={() => move(1)}
         >
           <ChevronRight size={20} />
         </button>
-        <span className={styles.controlDivider} />
+        <span className="mx-[5px] h-[22px] border-l border-line max-md:mx-0.5" />
         <button
+          className={controlButton}
           aria-label="Zoom out"
           disabled={zoom <= 1}
           onClick={() => setZoom(Math.max(1, zoom - 0.5))}
@@ -79,13 +91,14 @@ export default function ImageZoomDialog({ images, title, selected, onSelect, onC
         </button>
         <output aria-label="Zoom level">{Math.round(zoom * 100)}%</output>
         <button
+          className={controlButton}
           aria-label="Zoom in"
           disabled={zoom >= 3}
           onClick={() => setZoom(Math.min(3, zoom + 0.5))}
         >
           <ZoomIn size={20} />
         </button>
-        <button aria-label="Reset zoom" onClick={() => setZoom(1)}>
+        <button className={controlButton} aria-label="Reset zoom" onClick={() => setZoom(1)}>
           <RotateCcw size={18} />
         </button>
       </div>

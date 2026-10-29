@@ -10,7 +10,6 @@ import AddToCart from '../../cart/AddToCart';
 import RatingStars from '../../../shared/components/RatingStars';
 import { ErrorState, LoadingState } from '../../../shared/components/Feedback';
 import { formatCurrency } from '../../../shared/lib/formatCurrency';
-import styles from '../components/Products.module.css';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -29,7 +28,7 @@ export default function ProductDetailPage() {
   const validId = Number.isSafeInteger(productId) && productId > 0;
   if (!validId || product.isError)
     return (
-      <main id="main-content" className={styles.detailError}>
+      <main id="main-content" className="min-h-0 overflow-y-auto p-8 [&>a]:text-accent">
         <Link to={returnTo}>← Back to products</Link>
         <ErrorState
           message={
@@ -55,39 +54,42 @@ export default function ProductDetailPage() {
     );
   const data = product.data;
   return (
-    <main id="main-content" className={styles.detail}>
-      <div className={styles.galleryColumn}>
-        <Link className={styles.back} to={returnTo}>
+    <main id="main-content" className="detail-page">
+      <div className="detail-gallery">
+        <Link
+          className="flex h-[42px] w-[110px] shrink-0 items-center justify-center gap-[7px] rounded-md border border-line text-muted shadow-card max-md:h-[38px] max-md:w-[95px] max-md:text-sm"
+          to={returnTo}
+        >
           <ArrowLeft size={18} />
           Back
         </Link>
         <ProductGallery key={data.id} product={data} />
       </div>
-      <div className={styles.details} role="region" aria-label="Product information" tabIndex={0}>
+      <div className="product-info" role="region" aria-label="Product information" tabIndex={0}>
         <h1>{data.title}</h1>
-        <div className={styles.detailPrice}>
+        <div className="mb-6 flex flex-wrap items-center gap-5 [&>strong]:text-[29px] [&>strong]:tracking-[-.7px]">
           <strong>{formatCurrency(data.price)}</strong>
-          <RatingStars rating={data.rating} />
+          <RatingStars rating={data.rating} large />
           <AddToCart product={data} />
         </div>
-        <dl className={styles.metadata}>
+        <dl className="product-metadata">
           <dt>Brand:</dt>
           <dd>{data.brand || 'Not specified'}</dd>
           <dt>Category:</dt>
           <dd>{categoryLabel(data.category)}</dd>
         </dl>
-        <section className={styles.detailsSection}>
+        <section>
           <h2>Description</h2>
           <p>{data.description || 'No description is available for this product.'}</p>
         </section>
-        <section className={styles.detailsSection}>
+        <section>
           <h2>Reviews</h2>
           {data.reviews?.length ? (
             data.reviews.map((review, index) => (
-              <article className={styles.review} key={`${review.reviewerName}-${index}`}>
-                <div className={styles.reviewHeader}>
+              <article key={`${review.reviewerName}-${index}`}>
+                <div className="mb-2 flex flex-wrap items-center gap-3.5">
                   <h3>{review.reviewerName}</h3>
-                  <RatingStars rating={review.rating} />
+                  <RatingStars rating={review.rating} large />
                 </div>
                 <p>{review.comment}</p>
               </article>

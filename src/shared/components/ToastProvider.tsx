@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckCircle2, X } from 'lucide-react';
 import { ToastContext } from './toastContext';
-import styles from './Toast.module.css';
 
 interface Toast {
   message: string;
@@ -28,12 +27,19 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       {toast &&
         createPortal(
-          <div className={styles.toast} data-toast="true">
-            <CheckCircle2 size={18} aria-hidden="true" />
-            <span role="status" aria-live="polite">
+          <div
+            className="fixed right-5 bottom-5 z-[100] flex max-w-[min(390px,calc(100vw-40px))] items-center gap-2.5 rounded-[7px] border border-line bg-surface px-3.5 py-[13px] text-[13px] leading-[1.4] text-ink shadow-[0_4px_22px_#14203324]"
+            data-toast="true"
+          >
+            <CheckCircle2 size={18} aria-hidden="true" className="text-accent" />
+            <span role="status" aria-live="polite" className="break-words">
               {toast.message}
             </span>
-            <button aria-label="Dismiss notification" onClick={() => setToast(null)}>
+            <button
+              className="flex size-[26px] shrink-0 items-center justify-center border-0 p-0 text-muted"
+              aria-label="Dismiss notification"
+              onClick={() => setToast(null)}
+            >
               <X size={16} />
             </button>
           </div>,

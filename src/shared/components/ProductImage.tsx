@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ImageOff } from 'lucide-react';
-import styles from './Shared.module.css';
 
 export default function ProductImage({
   src,
@@ -17,7 +16,7 @@ export default function ProductImage({
   if (!src || failedUrl === src)
     return (
       <span
-        className={`${styles.imageFallback} ${className ?? ''}`}
+        className={`flex flex-col items-center justify-center gap-2 text-xs text-muted ${className ?? ''}`}
         role="img"
         aria-label={`${alt} — image unavailable`}
       >

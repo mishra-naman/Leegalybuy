@@ -1,7 +1,6 @@
 import type { ComponentProps } from 'react';
 import Modal from '../../shared/components/Modal';
 import FilterSidebar from './FilterSidebar';
-import styles from './Filters.module.css';
 
 export default function FilterDrawer({
   onClose,
@@ -10,8 +9,11 @@ export default function FilterDrawer({
   return (
     <Modal title="Filters" onClose={onClose} drawer>
       <FilterSidebar {...props} />
-      <div style={{ padding: '0 20px 20px' }}>
-        <button className={styles.apply} onClick={onClose}>
+      <div className="px-5 pb-5">
+        <button
+          className="mt-[11px] h-[37px] w-full border-primary bg-primary text-white hover:brightness-95"
+          onClick={onClose}
+        >
           Show results
         </button>
       </div>

@@ -1,18 +1,9 @@
-import {
-  Component,
-  lazy,
-  Suspense,
-  useEffect,
-  useState,
-  type ReactNode,
-  type ErrorInfo,
-} from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Component, lazy, Suspense, useState, type ReactNode, type ErrorInfo } from 'react';
+import { Outlet } from 'react-router-dom';
 import Header from '../shared/components/Header';
 import { SearchContext } from '../shared/components/searchContext';
 import { useSearchController } from '../shared/components/useSearchController';
 import { ErrorState, LoadingState } from '../shared/components/Feedback';
-import styles from './App.module.css';
 import ToastProvider from '../shared/components/ToastProvider';
 
 const Cart = lazy(() => import('../features/cart/CartDrawer'));
@@ -40,18 +31,17 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: boolean 
 export default function App() {
   const search = useSearchController();
   const [cartTrigger, setCartTrigger] = useState<HTMLButtonElement | null>(null);
-  const location = useLocation();
-  useEffect(() => {
-    window.scrollTo({ top: 0 });
-  }, [location.pathname]);
   return (
     <ErrorBoundary>
       <ToastProvider>
         <SearchContext.Provider value={search}>
-          <a className={styles.skipLink} href="#main-content">
+          <a
+            className="fixed -top-20 left-4 z-[100] rounded bg-surface px-4 py-2.5 focus:top-2"
+            href="#main-content"
+          >
             Skip to content
           </a>
-          <div className={styles.shell}>
+          <div className="flex h-dvh w-full flex-col overflow-hidden bg-surface [&>main]:min-h-0 [&>main]:flex-1 [&>main]:overflow-x-hidden">
             <Header openCart={setCartTrigger} />
             <Suspense
               fallback={
@@ -66,7 +56,10 @@ export default function App() {
           {cartTrigger && (
             <Suspense
               fallback={
-                <p className={styles.notice} role="status">
+                <p
+                  className="fixed right-5 bottom-5 z-10 rounded-[5px] bg-header px-5 py-3 text-white"
+                  role="status"
+                >
                   Opening cart…
                 </p>
               }
