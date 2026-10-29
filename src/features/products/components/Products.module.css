@@ -125,9 +125,14 @@
   display: grid;
   grid-template-columns: 47% minmax(0, 1fr);
   min-height: 0;
-  padding: 40px 36px 28px 27px;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+  padding: 28px 28px 24px 27px;
 }
 .galleryColumn {
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
   border-right: 1px solid var(--color-border);
   padding-right: 29px;
   display: flex;
@@ -148,10 +153,16 @@
   flex-shrink: 0;
 }
 .details {
-  padding-left: 34px;
+  padding: 0 10px 0 34px;
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  overscroll-behavior-y: contain;
 }
 .details h1 {
+  overflow-wrap: anywhere;
   font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.7px;
@@ -236,6 +247,7 @@
 .detailError {
   min-height: 0;
   padding: 32px;
+  overflow-y: auto;
 }
 .detailError > a {
   color: var(--color-primary-strong);
@@ -315,10 +327,13 @@
   .detail {
     display: block;
     padding: 22px 20px 35px;
+    overflow-y: auto;
   }
   .galleryColumn {
     border: 0;
     padding: 0;
+    height: min(65dvh, 500px);
+    min-height: 360px;
   }
   .back {
     width: 95px;
@@ -327,6 +342,7 @@
   }
   .details {
     padding: 28px 0 0;
+    overflow: visible;
   }
   .details h1 {
     font-size: 26px;

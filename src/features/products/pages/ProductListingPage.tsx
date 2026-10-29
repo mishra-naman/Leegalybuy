@@ -62,7 +62,7 @@ export default function ProductListingPage() {
     categories: categories.data ?? [],
     brands,
     update,
-    clear,
+    clear: () => update({ categories: [], brands: [], min: undefined, max: undefined }),
     loading: catalog.isPending || categories.isPending,
     categoryError: categories.error?.message,
     retryCategories: () => {

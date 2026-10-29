@@ -8,24 +8,32 @@ export default function Modal({
   onClose,
   drawer = false,
   className = '',
+  minimal = false,
+  returnFocusTo,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   drawer?: boolean;
   className?: string;
+  minimal?: boolean;
+  returnFocusTo?: HTMLElement | null;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const opener = useRef(returnFocusTo ?? document.activeElement);
   useEffect(() => {
     const dialog = ref.current;
-    const previousFocus = document.activeElement;
+    const previousFocus = opener.current;
     const previousOverflow = document.body.style.overflow;
     dialog?.showModal();
     document.body.style.overflow = 'hidden';
     return () => {
       dialog?.close();
       document.body.style.overflow = previousOverflow;
-      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+      window.setTimeout(() => {
+        if (previousFocus instanceof HTMLElement && previousFocus.isConnected)
+          previousFocus.focus();
+      }, 0);
     };
   }, []);
   return (
@@ -50,10 +58,10 @@ export default function Modal({
         }
       }}
     >
-      <div className={styles.modalHeader}>
-        <h2>{title}</h2>
+      <div className={minimal ? styles.minimalHeader : styles.modalHeader}>
+        <h2 className={minimal ? 'sr-only' : undefined}>{title}</h2>
         <button
-          aria-label={`Close ${title.toLowerCase()}`}
+          aria-label={minimal ? 'Close image gallery' : `Close ${title.toLowerCase()}`}
           className={styles.iconButton}
           onClick={onClose}
           autoFocus

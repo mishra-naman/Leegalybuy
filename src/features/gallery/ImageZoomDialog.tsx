@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import Modal from '../../shared/components/Modal';
 import ProductImage from '../../shared/components/ProductImage';
@@ -13,6 +13,14 @@ interface Props {
 }
 export default function ImageZoomDialog({ images, title, selected, onSelect, onClose }: Props) {
   const [zoom, setZoom] = useState(1);
+  const viewport = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const element = viewport.current;
+    if (element) {
+      element.scrollLeft = (element.scrollWidth - element.clientWidth) / 2;
+      element.scrollTop = (element.scrollHeight - element.clientHeight) / 2;
+    }
+  }, [zoom, selected]);
   function move(delta: number) {
     onSelect(Math.max(0, Math.min(images.length - 1, selected + delta)));
     setZoom(1);
@@ -34,8 +42,12 @@ export default function ImageZoomDialog({ images, title, selected, onSelect, onC
     return () => document.removeEventListener('keydown', navigate);
   }, [images.length, onSelect, selected]);
   return (
-    <Modal title={`Image gallery: ${title}`} onClose={onClose} className={styles.zoomModal}>
-      <div className={styles.zoomViewport}>
+    <Modal title={`Image gallery: ${title}`} onClose={onClose} className={styles.zoomModal} minimal>
+      <div
+        ref={viewport}
+        className={styles.zoomViewport}
+        onDragStart={(event) => event.preventDefault()}
+      >
         <div
           className={styles.zoomCanvas}
           style={{ width: `${zoom * 100}%`, height: `${zoom * 100}%` }}

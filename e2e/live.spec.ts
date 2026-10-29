@@ -54,10 +54,15 @@ test('live API smoke test and reference viewport captures', async ({ page }) => 
   await page.screenshot({ path: 'artifacts/detail-desktop.png', fullPage: true });
   await page.getByRole('button', { name: /Zoom image of/ }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
+  await page.screenshot({ path: 'artifacts/gallery-desktop.png' });
+  await page.getByRole('dialog').getByLabel('Zoom in', { exact: true }).click();
+  await page.screenshot({ path: 'artifacts/gallery-zoomed.png' });
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: /Add .* to cart/ }).click();
   await page.getByRole('button', { name: 'Open cart, 1 item', exact: true }).click();
   await expect(page.getByRole('dialog', { name: 'Your cart' })).toBeVisible();
+  await page.getByRole('dialog').getByRole('button', { name: 'Checkout', exact: true }).click();
+  await expect(page.getByText('Checkout will be implemented soon.')).toBeVisible();
   await page.screenshot({ path: 'artifacts/cart-desktop.png' });
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog', { name: 'Your cart' })).not.toBeVisible();

@@ -136,7 +136,7 @@ test('cart merges duplicates, changes quantity, persists and removes', async ({ 
   await page.goto('/');
   const add = page.getByRole('button', { name: 'Add Test product 01 to cart', exact: true });
   await add.click();
-  await add.click();
+  await page.getByLabel('Increase Test product 01 quantity', { exact: true }).click();
   await page.getByRole('button', { name: 'Open cart, 2 items' }).click();
   const cart = page.getByRole('dialog', { name: 'Your cart' });
   await expect(cart.getByText('$20', { exact: true })).toHaveCount(2);
@@ -157,14 +157,19 @@ test('theme persists and zoom supports controls, keyboard navigation, focus and 
 }) => {
   await page.goto('/product/1');
   await page.getByRole('button', { name: 'Switch to dark theme' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Switch to light theme' }).locator('svg'),
+  ).toHaveClass(/lucide-sun/);
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.getByRole('button', { name: /Zoom image of/ }).click();
   const gallery = page.getByRole('dialog', { name: /Image gallery:/ });
   await expect(gallery).toBeVisible();
+  const bounds = await gallery.boundingBox();
   await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
   await gallery.getByLabel('Zoom in', { exact: true }).click();
   await expect(gallery.getByLabel('Zoom level')).toHaveText('150%');
+  expect(await gallery.boundingBox()).toEqual(bounds);
   await gallery.getByLabel('Zoom out', { exact: true }).click();
   await expect(gallery.getByLabel('Zoom level')).toHaveText('100%');
   await gallery.getByLabel('Zoom in', { exact: true }).click();

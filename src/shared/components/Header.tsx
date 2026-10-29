@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, ShoppingCart, SunMoon, UserRound, Moon, Sun, House } from 'lucide-react';
+import { Menu, ShoppingCart, UserRound, Moon, Sun, House } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectCartCount } from '../../features/cart/cartSlice';
 import { toggleTheme } from '../../features/theme/themeSlice';
 import SearchField from './SearchField';
 import styles from './Shared.module.css';
 
-export default function Header({ openCart }: { openCart: () => void }) {
+export default function Header({ openCart }: { openCart: (trigger: HTMLButtonElement) => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menu = useRef<HTMLDivElement>(null);
+  const cartButton = useRef<HTMLButtonElement>(null);
   const dispatch = useAppDispatch();
   const count = useAppSelector(selectCartCount);
   const theme = useAppSelector((state) => state.theme);
@@ -45,6 +46,14 @@ export default function Header({ openCart }: { openCart: () => void }) {
             <Link to="/" onClick={() => setMenuOpen(false)}>
               <House size={17} /> All products
             </Link>
+            <button
+              onClick={(event) => {
+                openCart(cartButton.current ?? event.currentTarget);
+                setMenuOpen(false);
+              }}
+            >
+              <ShoppingCart size={17} /> Cart ({count})
+            </button>
             <button onClick={() => dispatch(toggleTheme())}>
               {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}{' '}
               {theme === 'light' ? 'Dark' : 'Light'} appearance
@@ -57,7 +66,8 @@ export default function Header({ openCart }: { openCart: () => void }) {
         <button
           className={styles.headerButton}
           aria-label={`Open cart, ${count} ${count === 1 ? 'item' : 'items'}`}
-          onClick={openCart}
+          ref={cartButton}
+          onClick={(event) => openCart(event.currentTarget)}
         >
           <ShoppingCart size={27} />
           {count > 0 && <span className={styles.badge}>{count > 99 ? '99+' : count}</span>}
@@ -66,8 +76,9 @@ export default function Header({ openCart }: { openCart: () => void }) {
           className={styles.headerButton}
           onClick={() => dispatch(toggleTheme())}
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+          aria-pressed={theme === 'dark'}
         >
-          <SunMoon size={25} />
+          {theme === 'light' ? <Moon size={25} /> : <Sun size={25} />}
         </button>
         <span className={styles.profile} aria-hidden="true">
           <UserRound size={25} fill="currentColor" />

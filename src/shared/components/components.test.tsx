@@ -16,6 +16,7 @@ import Pagination from './Pagination';
 import RatingStars from './RatingStars';
 import Header from './Header';
 import { EmptyState, ErrorState, LoadingState } from './Feedback';
+import ToastProvider from './ToastProvider';
 
 function makeStore() {
   return configureStore({
@@ -28,15 +29,26 @@ describe('interactive shared and feature components', () => {
     const store = makeStore();
     render(
       <Provider store={store}>
-        <MemoryRouter initialEntries={['/?page=2']}>
-          <ProductCard product={makeProduct()} />
-        </MemoryRouter>
+        <ToastProvider>
+          <MemoryRouter initialEntries={['/?page=2']}>
+            <ProductCard product={makeProduct()} />
+          </MemoryRouter>
+        </ToastProvider>
       </Provider>,
     );
     expect(screen.getByRole('link')).toHaveAttribute('href', '/product/1?returnTo=%2F%3Fpage%3D2');
     await userEvent.click(screen.getByRole('button', { name: /add.*to cart/i }));
     expect(store.getState().cart[0].quantity).toBe(1);
-    expect(screen.getByRole('status')).toHaveTextContent('added to cart');
+    expect(screen.getByText('Test handset added to cart.')).toBeInTheDocument();
+    expect(screen.getByLabelText('Test handset quantity')).toHaveTextContent('1');
+    await userEvent.click(screen.getByLabelText('Dismiss notification'));
+    await userEvent.click(screen.getByLabelText('Increase Test handset quantity'));
+    expect(store.getState().cart[0].quantity).toBe(2);
+    expect(screen.queryByText('Test handset added to cart.')).not.toBeInTheDocument();
+    await userEvent.click(screen.getByLabelText('Decrease Test handset quantity'));
+    await userEvent.click(screen.getByLabelText('Decrease Test handset quantity'));
+    expect(store.getState().cart).toEqual([]);
+    expect(screen.getByLabelText('Add Test handset to cart')).toBeInTheDocument();
   });
   it('checks multiple filters and validates price input without dropping other state', async () => {
     const update = vi.fn();
@@ -94,15 +106,21 @@ describe('interactive shared and feature components', () => {
     store.dispatch(cartSlice.actions.addItem(toCartItem(makeProduct({ price: 19.99 }))));
     render(
       <Provider store={store}>
-        <MemoryRouter>
-          <CartDrawer onClose={vi.fn()} />
-        </MemoryRouter>
+        <ToastProvider>
+          <MemoryRouter>
+            <CartDrawer onClose={vi.fn()} />
+          </MemoryRouter>
+        </ToastProvider>
       </Provider>,
     );
     expect(screen.getByRole('dialog', { name: 'Your cart' })).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText(/increase.*quantity/i));
     expect(store.getState().cart[0].quantity).toBe(2);
     expect(screen.getAllByText('$39.98')).toHaveLength(2);
+    await userEvent.click(screen.getByRole('button', { name: 'Checkout' }));
+    expect(screen.getByRole('dialog', { name: 'Your cart' })).toContainElement(
+      screen.getByText('Checkout will be implemented soon.'),
+    );
     await userEvent.click(screen.getByLabelText(/remove test/i));
     expect(screen.getByText('Your cart is empty')).toBeInTheDocument();
   });
@@ -115,9 +133,14 @@ describe('interactive shared and feature components', () => {
         </MemoryRouter>
       </Provider>,
     );
-    await userEvent.click(screen.getByLabelText('Switch to dark theme'));
+    const darkButton = screen.getByLabelText('Switch to dark theme');
+    expect(darkButton.querySelector('.lucide-moon')).toBeInTheDocument();
+    await userEvent.click(darkButton);
     expect(store.getState().theme).toBe('dark');
     expect(screen.getByLabelText('Switch to light theme')).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Switch to light theme').querySelector('.lucide-sun'),
+    ).toBeInTheDocument();
   });
   it('changes gallery images with thumbnails and page controls', async () => {
     render(<ProductGallery product={makeProduct()} />);

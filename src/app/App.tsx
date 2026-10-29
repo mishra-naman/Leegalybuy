@@ -13,6 +13,7 @@ import { SearchContext } from '../shared/components/searchContext';
 import { useSearchController } from '../shared/components/useSearchController';
 import { ErrorState, LoadingState } from '../shared/components/Feedback';
 import styles from './App.module.css';
+import ToastProvider from '../shared/components/ToastProvider';
 
 const Cart = lazy(() => import('../features/cart/CartDrawer'));
 
@@ -38,41 +39,43 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: boolean 
 
 export default function App() {
   const search = useSearchController();
-  const [cartOpen, setCartOpen] = useState(false);
+  const [cartTrigger, setCartTrigger] = useState<HTMLButtonElement | null>(null);
   const location = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [location.pathname]);
   return (
     <ErrorBoundary>
-      <SearchContext.Provider value={search}>
-        <a className={styles.skipLink} href="#main-content">
-          Skip to content
-        </a>
-        <div className={styles.shell}>
-          <Header openCart={() => setCartOpen(true)} />
-          <Suspense
-            fallback={
-              <main id="main-content">
-                <LoadingState />
-              </main>
-            }
-          >
-            <Outlet />
-          </Suspense>
-        </div>
-        {cartOpen && (
-          <Suspense
-            fallback={
-              <p className={styles.notice} role="status">
-                Opening cart…
-              </p>
-            }
-          >
-            <Cart onClose={() => setCartOpen(false)} />
-          </Suspense>
-        )}
-      </SearchContext.Provider>
+      <ToastProvider>
+        <SearchContext.Provider value={search}>
+          <a className={styles.skipLink} href="#main-content">
+            Skip to content
+          </a>
+          <div className={styles.shell}>
+            <Header openCart={setCartTrigger} />
+            <Suspense
+              fallback={
+                <main id="main-content">
+                  <LoadingState />
+                </main>
+              }
+            >
+              <Outlet />
+            </Suspense>
+          </div>
+          {cartTrigger && (
+            <Suspense
+              fallback={
+                <p className={styles.notice} role="status">
+                  Opening cart…
+                </p>
+              }
+            >
+              <Cart onClose={() => setCartTrigger(null)} returnFocusTo={cartTrigger} />
+            </Suspense>
+          )}
+        </SearchContext.Provider>
+      </ToastProvider>
     </ErrorBoundary>
   );
 }

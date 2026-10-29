@@ -17,6 +17,8 @@
   --color-hover: #f0f6ff;
   --color-danger: #b52c37;
   --color-skeleton: #e9eaee;
+  --color-scrollbar: #8996a7;
+  --color-scrollbar-track: #e2e5eb;
   --shadow-card: 0 1px 4px #1723330c;
   color-scheme: light;
   color: var(--color-text);
@@ -36,6 +38,8 @@
   --color-hover: #2d4058;
   --color-danger: #ff9ba5;
   --color-skeleton: #334153;
+  --color-scrollbar: #8393a9;
+  --color-scrollbar-track: #293646;
   --shadow-card: 0 1px 4px #0002;
   color-scheme: dark;
 }

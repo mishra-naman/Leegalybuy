@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    watch: { ignored: ['**/artifacts/**', '**/test-results/**', '**/playwright-report/**'] },
+  },
   build: { target: 'es2022' },
   test: {
     environment: 'jsdom',

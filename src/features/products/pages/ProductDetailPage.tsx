@@ -63,7 +63,7 @@ export default function ProductDetailPage() {
         </Link>
         <ProductGallery key={data.id} product={data} />
       </div>
-      <div className={styles.details}>
+      <div className={styles.details} role="region" aria-label="Product information" tabIndex={0}>
         <h1>{data.title}</h1>
         <div className={styles.detailPrice}>
           <strong>{formatCurrency(data.price)}</strong>

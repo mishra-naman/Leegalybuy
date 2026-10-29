@@ -35,6 +35,18 @@ Open the local URL printed by Vite. On Windows PowerShell with script execution 
 | `npm run build`        | Type-check and create production `dist/`                |
 | `npm run preview`      | Serve the production build locally                      |
 
+To stage, commit and push the current branch yourself, run:
+
+```sh
+npm run git:publish -- "Fix storefront interactions and layout"
+```
+
+The helper uses `git add .`, commits with your message, and pushes the current branch to `origin`. It stops if staging or committing fails. Preview the commands without changing Git state or uploading anything:
+
+```sh
+npm run git:publish -- --dry-run "Fix storefront interactions and layout"
+```
+
 Playwright uses installed Google Chrome by default. For bundled Chromium:
 
 ```sh
@@ -101,15 +113,17 @@ Catalogue/detail cache freshness is five minutes, categories thirty minutes. Obs
 
 ### Cart, theme and accessibility
 
-Cart snapshots contain ID, title, image, integer unit cents and quantity. Quantities merge on repeated adds and are bounded from 1 to 999; removal is explicit. Selectors derive count and subtotal. Zod rejects malformed persisted data and duplicate IDs; unavailable storage falls back safely with a developer diagnostic.
+Cart snapshots contain ID, title, image, integer unit cents and quantity. The first add switches the listing/detail control to a synchronized minus/quantity/plus stepper. Decreasing from one removes that product; the drawer also offers explicit removal. Quantities are bounded from 1 to 999. Selectors derive count and subtotal. Zod rejects malformed persisted data and duplicate IDs; unavailable storage falls back safely with a developer diagnostic.
 
-Light mode is the first-visit default. A small head script restores the saved theme before React renders. All surfaces use the same semantic tokens in both themes.
+The drawer keeps Checkout visible beneath its scrollable items. Checkout displays a coming-soon notice and does not start a payment flow. One small toast appears for a first add, clearing the cart or Checkout; quantity changes, filtering, search, gallery controls and theme changes do not create toasts. Repeated identical notices are deduplicated and dismiss automatically.
+
+Light mode is the first-visit default. A small head script restores the saved theme before React renders. The header alternates its moon/sun action icon with the selected theme. The hamburger menu provides All products, Cart and appearance controls. All surfaces use the same semantic tokens in both themes.
 
 Native modal dialogs provide focus trapping and Escape handling. The shared wrapper restores focus, locks body scrolling and closes on backdrop click. Controls have visible focus states, labelled inputs, live feedback, reduced-motion support and image fallbacks. Decorative account imagery does not imply authentication.
 
 ## Design and assumptions
 
-The supplied screenshots define the component styling: a 58px dark slate header, 274px sidebar, four columns, 12px grid gaps, 230px cards and compact blue pagination. Following the updated layout request, the shell fills the full viewport instead of using a centered fixed-width container. The shell hides outer overflow while the sidebar and main content scroll independently beneath the fixed header. The detail page uses a divided 47/53 two-column layout with internal scrolling. Tablet layouts reduce the grid; mobile uses two columns, a modal filter drawer and stacked details. Very narrow screens use one column.
+The supplied screenshots define the component styling: a 58px dark slate header, 274px sidebar, four columns, 12px grid gaps, 230px cards and compact blue pagination. Following the updated layout request, the shell fills the full viewport instead of using a centered fixed-width container. The shell hides outer overflow while the sidebar and main content scroll independently beneath the fixed header. The desktop detail page clips outer overflow, fits its gallery into the available height, and scrolls the information column independently. The image viewer keeps its frame fixed and enlarges only the picture. Tablet layouts reduce the grid; mobile uses two columns, a modal filter drawer and stacked, scrollable details. Very narrow screens use one column. Category/brand scrollbars have contrasting tracks and thumbs; Clear filters next to filter search clears selections and filter search while preserving product search.
 
 Live product titles, prices, images, categories, descriptions and reviews differ from the illustrative reference content. Long card titles are ellipsized and available in full on detail pages and accessible links. Large category/brand lists scroll inside their sections. Missing brands/descriptions/reviews show explicit fallbacks. API prices are displayed in USD. The cart is local to the browser; there is no authentication, stock reservation, payment or checkout backend.
 
@@ -117,7 +131,7 @@ Live product titles, prices, images, categories, descriptions and reviews differ
 
 Unit tests cover combined filtering, multi-select behavior, inclusive boundaries, all sort orders, immutable processing, page clamping, URL round-trips, invalid input, safe return links, cart quantities/totals, corrupt storage, theme toggles and API failures/cancellation. Component tests exercise cards, filters, validation, pagination, feedback, cart, themes and gallery navigation. Browser tests cover complete filter/navigation/cart/theme/zoom/mobile/error flows, independent search state and viewport scrolling.
 
-Verified locally: 26 unit/component tests, 11 deterministic browser flows and the live API smoke test passed. Strict type checking, lint, formatting and the production build passed. Desktop, mobile, cart and dark-theme screenshots were captured for inspection.
+Verification commands are listed above. Browser regression tests also cover synchronized quantity controls, limited toast feedback, checkout notices, visible filter scrollbars, short-screen detail layout and fixed image-zoom bounds. Desktop, mobile, cart, image-viewer and dark-theme captures are produced by the opt-in live test.
 
 Both page implementations are lazy loaded. Cart, mobile filters and zoom split into separate chunks. Above-the-fold thumbnails and the main detail image are prioritized; other images are lazy loaded with reserved dimensions. Filtering and sorting use memoized pure computations. Eight cards do not need virtualization. No runtime CSS framework, gallery package, HTTP wrapper or duplicate server-state store is included.
 

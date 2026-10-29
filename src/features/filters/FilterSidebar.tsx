@@ -51,12 +51,18 @@ export default function FilterSidebar({
     });
   }
   const hasFilters = !!(
-    filters.q ||
     filters.categories.length ||
     filters.brands.length ||
     filters.min !== undefined ||
     filters.max !== undefined
   );
+  function resetFilters() {
+    setMin('');
+    setMax('');
+    setError('');
+    onSearchChange('');
+    clear();
+  }
   return (
     <div className={styles.sidebar}>
       <form
@@ -69,11 +75,21 @@ export default function FilterSidebar({
         <input
           type="search"
           aria-label="Search filters"
-          placeholder="Search filters..."
+          placeholder="Search..."
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           maxLength={200}
         />
+        <button
+          className={styles.clearButton}
+          type="button"
+          aria-label="Clear filters"
+          title="Clear filters"
+          disabled={!hasFilters && !search && !min && !max}
+          onClick={resetFilters}
+        >
+          Clear filters
+        </button>
       </form>
       <section className={styles.section} aria-labelledby="category-heading">
         <h2 id="category-heading" className={styles.categoryHeading}>
@@ -179,20 +195,6 @@ export default function FilterSidebar({
           )}
         </div>
       </section>
-      {hasFilters && (
-        <button
-          className={styles.clear}
-          onClick={() => {
-            setMin('');
-            setMax('');
-            setError('');
-            onSearchChange('');
-            clear();
-          }}
-        >
-          Clear filters
-        </button>
-      )}
     </div>
   );
 }
